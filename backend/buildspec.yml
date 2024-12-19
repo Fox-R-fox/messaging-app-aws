@@ -4,7 +4,6 @@ phases:
   install:
     commands:
       - echo Installing dependencies...
-      - cd backend
       - npm install
       - echo Installing kubectl...
       - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -21,11 +20,10 @@ phases:
       - echo Logging in to DockerHub...
       - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
       - echo Configuring kubectl...
-      - aws eks update-kubeconfig --name Tetris-EKS-Cluster --region us-east-1 --role-arn arn:aws:iam::654654291247:role/your-codebuild-role
+      - aws eks update-kubeconfig --name Tetris-EKS-Cluster --region us-east-1 --role-arn arn:aws:iam::654654291247:role/codebuild-message-backend-service-role
   build:
     commands:
       - echo Build started on `date`
-      - cd backend
       - npm run build
       - echo Building Docker image...
       - docker build -t foxe03/messaging-app-backend .
