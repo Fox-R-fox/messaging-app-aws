@@ -2,12 +2,7 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      nodejs: 14
-      docker: 19
     commands:
-      - echo Installing dependencies...
-      - npm install
       - echo Installing kubectl...
       - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
       - chmod +x ./kubectl
@@ -27,6 +22,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - npm install
       - npm run build
       - echo Building Docker image...
       - docker build -t foxe03/messaging-app-frontend .
