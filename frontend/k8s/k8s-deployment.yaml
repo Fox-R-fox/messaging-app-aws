@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: messaging-app-backend
+  template:
+    metadata:
+      labels:
+        app: messaging-app-backend
+    spec:
+      containers:
+      - name: messaging-app-backend
+        image: foxe03/messaging-app-backend:latest
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: messaging-app-frontend
+  template:
+    metadata:
+      labels:
+        app: messaging-app-frontend
+    spec:
+      containers:
+      - name: messaging-app-frontend
+        image: foxe03/messaging-app-frontend:latest
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-app-backend-service
+spec:
+  selector:
+    app: messaging-app-backend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-app-frontend-service
+spec:
+  selector:
+    app: messaging-app-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
