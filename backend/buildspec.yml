@@ -14,6 +14,7 @@ phases:
       - mv ./kubectl /usr/local/bin/kubectl
       - echo Installing jq...
       - yum install -y jq
+
   pre_build:
     commands:
       - echo Retrieving DockerHub credentials from AWS Secrets Manager...
@@ -24,18 +25,25 @@ phases:
       - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
       - echo Configuring kubectl...
       - aws eks update-kubeconfig --name Tetris-EKS-Cluster --region us-east-1 --role-arn arn:aws:iam::654654291247:role/your-codebuild-role
+
   build:
     commands:
       - echo Build started on `date`
+      - echo "Listing current directory contents:"
+      - ls -alh  # List files to check the directory structure
+      - echo "Changing to backend directory..."
+      - cd backend  # Change to the backend directory
       - npm run build
       - echo Building Docker image...
       - docker build -t foxe03/messaging-app-backend .
       - echo Pushing Docker image...
       - docker push foxe03/messaging-app-backend
+
   post_build:
     commands:
       - echo Updating Kubernetes deployment...
       - kubectl set image deployment/messaging-app-backend messaging-app-backend=foxe03/messaging-app-backend:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
 artifacts:
   files:
     - '**/*'
