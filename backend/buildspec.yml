@@ -12,7 +12,7 @@ phases:
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/kubectl
       - echo Installing jq...
-      - apt-get update && apt-get install -y jq  # Fixed the issue for Ubuntu-based systems
+      - apt-get update && apt-get install -y jq
 
   pre_build:
     commands:
@@ -23,23 +23,14 @@ phases:
       - echo Logging in to DockerHub...
       - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
       - echo Configuring kubectl...
-      - aws sts assume-role --role-arn arn:aws:iam::654654291247:role/codebuild-message-backend-service-role --role-session-name CodeBuildSession --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text > /tmp/creds.txt
-      - export AWS_ACCESS_KEY_ID=$(awk '{print $1}' /tmp/creds.txt)
-      - export AWS_SECRET_ACCESS_KEY=$(awk '{print $2}' /tmp/creds.txt)
-      - export AWS_SESSION_TOKEN=$(awk '{print $3}' /tmp/creds.txt)
-      - aws eks update-kubeconfig --name Tetris-EKS-Cluster --region us-east-1
+      - aws eks update-kubeconfig --name Tetris-EKS-Cluster --region us-east-1 --role-arn arn:aws:iam::654654291247:role/codebuild-message-backend-service-role
 
   build:
     commands:
       - echo "Listing files in the root directory..."
-      - ls -l  # List all files and directories at the root level to confirm backend directory exists
-      - echo "Current working directory is..."
-      - pwd  # Print current directory to debug path
+      - ls -l
       - echo "Changing to backend directory..."
       - cd backend
-      - echo "Current directory inside backend..."
-      - pwd  # Print the working directory again after changing to backend
-      - ls -l  # List files inside the backend directory to verify package.json exists
       - npm run build
       - echo "Building Docker image..."
       - docker build -t foxe03/messaging-app-backend .
