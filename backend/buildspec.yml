@@ -3,8 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14
-      docker: 19
+      nodejs: 14  # Use the Node.js runtime as required
     commands:
       - echo Installing dependencies...
       - cd backend  # Change to the backend directory where package.json is located
@@ -15,6 +14,8 @@ phases:
       - mv ./kubectl /usr/local/bin/kubectl
       - echo Installing jq...
       - yum install -y jq
+      - echo Installing Docker (if not available already)...
+      - yum install -y docker  # Ensure Docker is installed in the environment
 
   pre_build:
     commands:
