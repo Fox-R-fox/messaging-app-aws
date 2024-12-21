@@ -24,7 +24,7 @@ phases:
       - echo Logging in to DockerHub...
       - echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
       - echo Configuring kubectl...
-      - aws eks update-kubeconfig --name Tetris-EKS-Cluster --region us-east-1 --role-arn arn:aws:iam::654654291247:role/your-codebuild-role
+      - aws eks update-kubeconfig --name Tetris-EKS-Cluster --region us-east-1 --role-arn arn:aws:iam::654654291247:role/codebuild-message-backend-service-role
 
   build:
     commands:
