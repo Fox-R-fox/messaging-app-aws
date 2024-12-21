@@ -12,7 +12,7 @@ phases:
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/kubectl
       - echo Installing jq...
-      - apt-get update && apt-get install -y jq
+      - apt-get update && apt-get install -y jq  # Fixed the issue for Ubuntu-based systems
 
   pre_build:
     commands:
@@ -31,7 +31,6 @@ phases:
       - ls -l
       - echo "Changing to backend directory..."
       - cd backend
-      - npm run build
       - echo "Building Docker image..."
       - docker build -t foxe03/messaging-app-backend .
       - echo "Pushing Docker image..."
@@ -41,8 +40,3 @@ phases:
     commands:
       - echo Updating Kubernetes deployment...
       - kubectl set image deployment/messaging-app-backend messaging-app-backend=foxe03/messaging-app-backend:$CODEBUILD_RESOLVED_SOURCE_VERSION
-
-artifacts:
-  files:
-    - '**/*'
-  discard-paths: yes
