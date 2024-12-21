@@ -3,17 +3,16 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14  # Use the Node.js runtime as required
+      nodejs: 14
     commands:
       - echo Installing dependencies...
-      - cd backend  # Change to the backend directory where package.json is located
-      - npm install  # Now this will run in the correct directory
+      - npm install
       - echo Installing kubectl...
       - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/kubectl
       - echo Installing jq...
-      - apt-get update && apt-get install -y jq  # Use apt-get instead of yum for Ubuntu
+      - apt-get update && apt-get install -y jq  # Fixed the issue for Ubuntu-based systems
 
   pre_build:
     commands:
@@ -28,15 +27,19 @@ phases:
 
   build:
     commands:
-      - echo Build started on `date`
-      - echo "Listing current directory contents:"
-      - ls -alh  # List files to check the directory structure
+      - echo "Listing files in the root directory..."
+      - ls -l  # List all files and directories at the root level to confirm backend directory exists
+      - echo "Current working directory is..."
+      - pwd  # Print current directory to debug path
       - echo "Changing to backend directory..."
-      - cd backend  # Change to the backend directory if not already done
+      - cd backend
+      - echo "Current directory inside backend..."
+      - pwd  # Print the working directory again after changing to backend
+      - ls -l  # List files inside the backend directory to verify package.json exists
       - npm run build
-      - echo Building Docker image...
+      - echo "Building Docker image..."
       - docker build -t foxe03/messaging-app-backend .
-      - echo Pushing Docker image...
+      - echo "Pushing Docker image..."
       - docker push foxe03/messaging-app-backend
 
   post_build:
