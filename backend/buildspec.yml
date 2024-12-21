@@ -13,9 +13,7 @@ phases:
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/kubectl
       - echo Installing jq...
-      - yum install -y jq
-      - echo Installing Docker (if not available already)...
-      - yum install -y docker  # Ensure Docker is installed in the environment
+      - apt-get update && apt-get install -y jq  # Use apt-get instead of yum for Ubuntu
 
   pre_build:
     commands:
